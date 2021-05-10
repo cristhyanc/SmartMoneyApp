@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using SmartApp.Common.Interfaces.Todo;
-using SmartApp.Todo;
+
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -14,14 +14,15 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SmartApp.DataAccess;
 using System.Linq;
+using SmartApp.Core.Contract;
 
 namespace SmartApp.API.Todo
 {
     public class TodoFunction
     {
 
-        private readonly ITodoProcess _context;
-        public TodoFunction(ITodoProcess context)
+        private readonly ITodoService _context;
+        public TodoFunction(ITodoService context)
         {
             _context = context;
         }
@@ -41,7 +42,7 @@ namespace SmartApp.API.Todo
 
                 string responseMessage = "list of todos";
 
-                var list2 = _context.GetTodos();
+                var list2 = await _context.GetAllTodos();
                 return new OkObjectResult(list2);
             }
             catch (Exception ex)
@@ -50,6 +51,33 @@ namespace SmartApp.API.Todo
                 throw ex;
             }
            
+        }
+
+        [FunctionName("GetTodo")]
+        public async Task<IActionResult> GetTodo(
+           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "todo/{id}")] HttpRequest req,
+          ILogger log, Int64 id)
+        {
+            try
+            {
+                log.LogInformation("C# HTTP trigger function processed a request.");
+
+                string responseMessage = "list of todos";
+
+                var todo = await _context.GetTodo(id);
+                if(todo==null)
+                {
+                    return new NotFoundResult();
+                }
+              
+                return new OkObjectResult(todo);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
         }
     }
 }

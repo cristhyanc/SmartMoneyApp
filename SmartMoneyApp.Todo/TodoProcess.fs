@@ -13,9 +13,9 @@ type public TodoProcess(context: SmartAppContext)  =
 
         member  this.GetTodos()=
             let todoItems: List<TodoItem > =new List<TodoItem>()
-            for item in context.TodoItems.ToList() do
-                let newItem=new TodoItem (Description=item.Description, Id=item.Id , DueDate=item.DueDate)
-                todoItems.Add(newItem)
+           // for item in context.TodoItems.ToList() do
+                //let newItem=new TodoItem (Description=item.Description, Id=item.Id , DueDate=item.DueDate)
+                //todoItems.Add(newItem)
 
             //let item=new TodoItem (Description="Todo 1", Id=Guid.NewGuid(), DueDate=DateTime.Now);
             //todoItems.Add(item)

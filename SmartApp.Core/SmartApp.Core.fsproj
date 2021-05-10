@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Entities\TodoItem.fs" />
+    <Compile Include="Contracts\IRepositoryBase.fs" />
+    <Compile Include="Contracts\ITodoRepository.fs" />
+    <Compile Include="Contracts\ITodoService.fs" />
+    <Compile Include="Services\TodoService.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SmartMoneyApp.Common\SmartApp.Common.csproj" />
+  </ItemGroup>
+
+</Project>

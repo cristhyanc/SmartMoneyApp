@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SmartApp.DataAccess.Models.Todo;
+using SmartApp.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,8 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SmartApp.Common.Interfaces.Todo;
+using SmartApp.Core.Contract;
+using SmartApp.Core.Services;
 using SmartApp.DataAccess;
-using SmartApp.Todo;
+using SmartApp.DataAccess.Repositories;
 using System;
 
 
@@ -20,7 +22,8 @@ namespace SmartApp.API
             builder.Services.AddDbContext<SmartAppContext>(
                 options => options.UseSqlServer(SqlConnection));
 
-            builder.Services.AddScoped<ITodoProcess, TodoProcess>();
+            builder.Services.AddScoped<ITodoService, TodoService>();
+            builder.Services.AddScoped<ITodoRepository, TodoRepository>();
         }
     }
 }
