@@ -1,0 +1,35 @@
+@page "/TodoList"
+@inherits SmartMoneyApp.Web.Todo.TodoList
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (Todos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>               
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in Todos)
+            {
+            <tr>
+                <td>
+                    @todo.Description
+                </td>
+                <td>
+                    @todo.DueDate.ToShortDateString()
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}

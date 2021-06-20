@@ -1,7 +1,7 @@
 ﻿namespace SmartApp.Core.Contract
 
 open System.Threading.Tasks
-open SmartApp.Core.Entities
+
 
 
 type IRepositoryBase<'T> =
@@ -10,8 +10,9 @@ type IRepositoryBase<'T> =
 
     abstract member GetAsync: id:int64 -> Task<'T>
 
-    abstract member GetAll:unit -> seq<'T>
+    abstract member GetAll: skip:int -> take:int -> seq<'T>
 
-    abstract member GetAllAsync:unit -> Task<seq<'T>>
+    abstract member GetAllAsync: skip:int -> take:int  -> Task<int * seq<'T>>
+
 
     

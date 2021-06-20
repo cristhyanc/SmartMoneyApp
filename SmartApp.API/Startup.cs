@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using MapsterMapper;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SmartApp.Common.Interfaces.Todo;
@@ -22,8 +23,11 @@ namespace SmartApp.API
             builder.Services.AddDbContext<SmartAppContext>(
                 options => options.UseSqlServer(SqlConnection));
 
-            builder.Services.AddScoped<ITodoService, TodoService>();
+            //builder.Services.AddScoped<ITodoService, TodoService>();
             builder.Services.AddScoped<ITodoRepository, TodoRepository>();
+            builder.Services.AddScoped<IExpiryngThingService, ExpiryngThingService>();
+            builder.Services.AddScoped<IExpiryngThingRepository, ExpiryngThingRepository>();
+            
         }
     }
 }

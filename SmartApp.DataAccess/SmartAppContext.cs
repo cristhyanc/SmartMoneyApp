@@ -16,5 +16,6 @@ namespace SmartApp.DataAccess
         }
 
         public DbSet<TodoItem>  TodoItems { get; set; }
+        public DbSet<ExpiryngThing> ExpiryngThing { get; set; }
     }
 }

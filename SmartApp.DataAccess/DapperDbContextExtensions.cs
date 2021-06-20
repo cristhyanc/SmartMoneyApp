@@ -14,6 +14,30 @@ namespace SmartApp.DataAccess
 {
     public static class DapperDbContextExtensions
     {
+
+        public static async Task<T> ExecuteScalarAsync<T>(
+            this DbContext context,
+            string text,
+            object parameters = null,
+            int? timeout = null,
+            CommandType? type = null,
+            CancellationToken? ct = null
+        )
+        {
+            using var command = new DapperEFCoreCommand(
+                context,
+                text,
+                parameters,
+                timeout,
+                type,
+                ct.HasValue ? ct.Value : new CancellationToken()
+            );
+
+            var connection = context.Database.GetDbConnection();
+            return await connection.ExecuteScalarAsync<T>(command.Definition);
+        }
+
+
         public static async Task<IEnumerable<T>> QueryAsync<T>(
             this DbContext context,
             string text,

@@ -5,11 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Entities\ExpiryngThing.fs" />
     <Compile Include="Entities\TodoItem.fs" />
     <Compile Include="Contracts\IRepositoryBase.fs" />
+    <Compile Include="Contracts\IExpiryngThingRepository.fs" />
+    <Compile Include="Contracts\IExpiryngThingService.fs" />
     <Compile Include="Contracts\ITodoRepository.fs" />
     <Compile Include="Contracts\ITodoService.fs" />
+    <Compile Include="Services\ExpiryngThingService.fs" />
     <Compile Include="Services\TodoService.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.2.0" />
   </ItemGroup>
 
   <ItemGroup>

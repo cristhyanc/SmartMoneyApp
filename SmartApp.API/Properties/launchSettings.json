@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SmartApp.API": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --port 80",
+      "jsWebView2Debugging": false
+    }
+  }
+}

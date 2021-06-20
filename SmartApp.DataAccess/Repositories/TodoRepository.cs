@@ -52,7 +52,7 @@ namespace SmartApp.DataAccess.Repositories
             return data;
         }
 
-        public override IEnumerable<TodoItem> GetAll()
+        public override IEnumerable<TodoItem> GetAll(int skip = 0, int take = 20)
         {
             var data =  _context.Query<TodoItem>
                 (@"SELECT [Id]
@@ -64,32 +64,33 @@ namespace SmartApp.DataAccess.Repositories
                   FETCH NEXT @Take ROWS ONLY",
                 new
                 {
-                    Skip = 0,
-                    Take = 20
+                    Skip = skip,
+                    Take = take
                 });
 
             return data;
 
         }
 
-        public async override Task<IEnumerable<TodoItem>> GetAllAsync()
+        public async override Task<Tuple<int, IEnumerable<TodoItem>>> GetAllAsync(int skip = 0, int take = 20)
         {
 
-            var data = await _context.QueryAsync<TodoItem>
-                (@"SELECT [Id]
-                      ,[Description]
-                      ,[DueDate]
-                  FROM [dbo].[TodoItems]
-                  ORDER BY [Description] DESC
-                  OFFSET @Skip ROWS
-                  FETCH NEXT @Take ROWS ONLY",
-                new
-                {
-                    Skip = 0,
-                    Take = 20
-                });
+            //var data = await _context.QueryAsync<TodoItem>
+            //    (@"SELECT [Id]
+            //          ,[Description]
+            //          ,[DueDate]
+            //      FROM [dbo].[TodoItems]
+            //      ORDER BY [Description] DESC
+            //      OFFSET @Skip ROWS
+            //      FETCH NEXT @Take ROWS ONLY",
+            //    new
+            //    {
+            //        Skip = skip,
+            //        Take = take
+            //    });
 
-            return data;
+            //return data;
+            return null;
 
         }
        

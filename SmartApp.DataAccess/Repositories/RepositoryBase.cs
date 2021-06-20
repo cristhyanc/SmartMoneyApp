@@ -23,8 +23,8 @@ namespace SmartApp.DataAccess.Repositories
         }
 
 
-        public abstract IEnumerable<T> GetAll();
-        public abstract Task<IEnumerable<T>> GetAllAsync();
+        public abstract IEnumerable<T> GetAll(int skip = 0, int take = 20);
+        public abstract Task<Tuple<int, IEnumerable<T>>> GetAllAsync(int skip = 0, int take = 20);
         public abstract T Get(Int64 id);
         public abstract Task<T> GetAsync(Int64 id);
 
@@ -64,7 +64,6 @@ namespace SmartApp.DataAccess.Repositories
         {
             _context.Dispose();
         }
-
-      
+        
     }
 }
