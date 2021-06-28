@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartApp.DataAccess", "Smar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartApp.API", "SmartApp.API\SmartApp.API.csproj", "{8FEC6DED-23FF-44C2-B330-B3D8D6300134}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "SmartApp.Core", "SmartApp.Core\SmartApp.Core.fsproj", "{E6B23F13-9B27-4E51-9D6E-58D7994C92DF}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "SmartApp.Core.ExpiringThings", "SmartApp.Core\SmartApp.Core.ExpiringThings.fsproj", "{E6B23F13-9B27-4E51-9D6E-58D7994C92DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartApp.App.Android", "SmartApp.App\SmartApp.App.Android\SmartApp.App.Android.csproj", "{8A28AE4A-AF1E-43AC-8071-FE5C2DDB3D7E}"
 EndProject

@@ -4,7 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SmartApp.Common.Interfaces.Todo;
 using SmartApp.Core.Contract;
+using SmartApp.Core.Contract.ExpiringThings;
 using SmartApp.Core.Services;
+using SmartApp.Core.Services.ExpiringThings;
 using SmartApp.DataAccess;
 using SmartApp.DataAccess.Repositories;
 using System;
@@ -24,7 +26,7 @@ namespace SmartApp.API
                 options => options.UseSqlServer(SqlConnection));
 
             //builder.Services.AddScoped<ITodoService, TodoService>();
-            builder.Services.AddScoped<ITodoRepository, TodoRepository>();
+           // builder.Services.AddScoped<ITodoRepository, TodoRepository>();
             builder.Services.AddScoped<IExpiryngThingService, ExpiryngThingService>();
             builder.Services.AddScoped<IExpiryngThingRepository, ExpiryngThingRepository>();
             

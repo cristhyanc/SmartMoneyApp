@@ -1,13 +1,14 @@
-﻿namespace SmartApp.Core.Services
+﻿namespace SmartApp.Core.Services.ExpiringThings
 
 open System
-open SmartApp.Core.Entities
 open System.Collections.Generic
 open SmartApp.Core.Contract
 open System.Threading.Tasks
 open MapsterMapper
 open Mapster;
 open SmartApp.Common.DTO
+open SmartApp.Core.Contract.ExpiringThings
+open SmartApp.Core.Entities.ExpiringThings
 
 
 type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingRepository, mapper: IMapper)  =
@@ -17,7 +18,7 @@ type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingReposito
       member this.GetAll(skip: int) (take: int): Task<int * seq<ExpiryngThingDto>> =   
                            async {
                                    let items: List<ExpiryngThingDto> = new List<ExpiryngThingDto>()
-                                   let! (total, data) = expiryngThingRepository.GetAllAsync(skip)(take) |> Async.AwaitTask
+                                   let! (total, data) = expiryngThingRepository.GetAllAsync(skip,take) |> Async.AwaitTask
                                    let listData= data |> Seq.toList
                                    let result = listData.Adapt<List<SmartApp.Common.DTO.ExpiryngThingDto>>()
                                    return (total, Seq.cast result)
@@ -30,6 +31,24 @@ type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingReposito
                         then return data.Adapt<ExpiryngThingDto>()
                      else
                         return null            
+                  } |> Async.StartAsTask
+
+        member this.Save(newItem:ExpiryngThingDto): Task<ExpiryngThingDto>=
+            async {
+                    if String.IsNullOrEmpty(newItem.Description)
+                        then nullArg "Description" "Description is Require"
+                    
+                    let data=newItem.Adapt<ExpiryngThing>()
+
+                    if data.Id=0L 
+                        then do! expiryngThingRepository.Insert(data) |> Async.AwaitTask |> Async.Ignore
+                    else  
+                        expiryngThingRepository.Update(data)
+                    
+                    do! expiryngThingRepository.SaveChangesAsync() |> Async.AwaitTask |> Async.Ignore
+
+                    return data.Adapt<ExpiryngThingDto>()
+
                   } |> Async.StartAsTask
 
         

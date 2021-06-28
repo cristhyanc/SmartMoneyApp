@@ -21,8 +21,12 @@ namespace SmartApp.Client.BL.ExpiryngThing
         {
             var result = await this.GetAsync<PagedResult<ExpiryngThingDto>>($"expiringthing/{pageNo}/{pageSize}");
             return result;
-
         }
 
+        public async Task<ExpiryngThingDto> SaveExpiryngThings(ExpiryngThingDto data)
+        {
+            var result = await this.PostAsync<ExpiryngThingDto, ExpiryngThingDto>($"expiringthing", data);
+            return result;
+        }
     }
 }

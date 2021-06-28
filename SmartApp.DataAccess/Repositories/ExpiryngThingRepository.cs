@@ -1,8 +1,7 @@
-﻿using SmartApp.Core.Contract;
-using SmartApp.Core.Entities;
+﻿using SmartApp.Core.Contract.ExpiringThings;
+using SmartApp.Core.Entities.ExpiringThings;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SmartApp.DataAccess.Repositories

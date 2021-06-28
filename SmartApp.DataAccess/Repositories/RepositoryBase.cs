@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.FSharp.Control;
+using SmartApp.Common.Interfaces.Core;
 using SmartApp.Core.Contract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace SmartApp.DataAccess.Repositories
     {
 
 
-        SmartAppContext _context;
+        SmartAppContext _context;      
 
         public RepositoryBase(SmartAppContext context)
         {
@@ -27,17 +29,17 @@ namespace SmartApp.DataAccess.Repositories
         public abstract Task<Tuple<int, IEnumerable<T>>> GetAllAsync(int skip = 0, int take = 20);
         public abstract T Get(Int64 id);
         public abstract Task<T> GetAsync(Int64 id);
-
-
-
-        public virtual void Insert(T entity)
+        public virtual async Task Insert(T entity)
         {
-            this._context.Set<T>().Add(entity);
+            Type examType = typeof(T);
+            PropertyInfo createdOn = examType.GetProperty("CreatedOn");
+            createdOn.SetValue(entity, DateTime.Now);
+            await  this._context.Set<T>().AddAsync(entity);
         }
 
-        public virtual void Insert(IEnumerable<T> entities)
+        public virtual async Task Insert(IEnumerable<T> entities)
         {
-            this._context.Set<T>().AddRange(entities);
+           await this._context.Set<T>().AddRangeAsync(entities);
         }
 
         public virtual void Update(T entity)
@@ -59,6 +61,10 @@ namespace SmartApp.DataAccess.Repositories
             this._context.Set<T>().RemoveRange(entities);
         }
 
+        public virtual async Task SaveChangesAsync()
+        {
+            await this._context.SaveChangesAsync();
+        }      
 
         public void Dispose()
         {

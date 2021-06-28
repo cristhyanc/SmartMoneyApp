@@ -25,7 +25,7 @@ namespace SmartApp.App.iOS
             global::Xamarin.Forms.Forms.Init();
             Syncfusion.XForms.iOS.PopupLayout.SfPopupLayoutRenderer.Init();
             LoadApplication(new App());
-
+         
             return base.FinishedLaunching(app, options);
         }
     }

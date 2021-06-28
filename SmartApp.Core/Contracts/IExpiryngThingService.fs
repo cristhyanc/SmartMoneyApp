@@ -9,3 +9,5 @@ type public IExpiryngThingService =
 
     abstract Get: id:int64 -> Task<ExpiryngThingDto>
 
+    abstract Save: newItem:ExpiryngThingDto -> Task<ExpiryngThingDto>
+

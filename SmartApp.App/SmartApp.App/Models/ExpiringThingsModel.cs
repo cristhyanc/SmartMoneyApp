@@ -18,7 +18,7 @@ namespace SmartApp.App.Models
                 {
                     if (Data.ExpireDate > DateTime.Now)
                     {
-                        var totalDays = Data.ExpireDate - Data.CreatedOn;
+                        var totalDays = Data.ExpireDate - Data.CreatedOn.Value;
                         var daysLeft = Data.ExpireDate - DateTime.Now;
 
                         var percentage = (daysLeft.Days * 100) / totalDays.Days;

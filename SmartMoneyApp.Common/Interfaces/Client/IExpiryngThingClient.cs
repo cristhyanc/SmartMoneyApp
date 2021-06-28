@@ -9,5 +9,6 @@ namespace SmartApp.Common.Interfaces.Client
     public interface IExpiryngThingClient
     {
         Task<PagedResult<ExpiryngThingDto>> GetAllExpiryngThings(int pageNo, int pageSize);
+        Task<ExpiryngThingDto> SaveExpiryngThings(ExpiryngThingDto data);
     }
 }

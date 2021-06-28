@@ -138,6 +138,9 @@
     <PackageReference Include="Rg.Plugins.Popup">
       <Version>2.0.0.11</Version>
     </PackageReference>
+    <PackageReference Include="Syncfusion.Xamarin.SfPicker">
+      <Version>19.1.0.69</Version>
+    </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfPopupLayout">
       <Version>16.4.0.52</Version>
     </PackageReference>

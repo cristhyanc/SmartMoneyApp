@@ -23,6 +23,8 @@ namespace SmartApp.App.ViewModels.ExpiringThings
         public event EventHandler<ExpiringThingsModel> ScrollToEvent;
         private bool _loadingMoreItems = false;
         private bool _displayPopup;
+        private AddExpiringThingViewModel _addExpiringThingViewModel;
+
         public bool DisplayPopup
         {
             get => _displayPopup;
@@ -43,6 +45,16 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             }
         }
 
+        public AddExpiringThingViewModel AddExpiringThingViewModel
+        {
+            get => _addExpiringThingViewModel;
+            set
+            {
+                SetProperty(ref _addExpiringThingViewModel, value);              
+            }
+        }
+
+
 
         public int ItemTreshold
         {
@@ -54,6 +66,8 @@ namespace SmartApp.App.ViewModels.ExpiringThings
         public Command LoadItemsCommand { get; }
 
         public Command AddItemCommand { get; }
+
+        public Command SaveNewItemCommand { get; }
         
         public Command ItemsThresholdReachedCommand { get; }
 
@@ -68,8 +82,34 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             });
 
             AddItemCommand = new Command(() => { this.DisplayPopup = true; });
-
+            SaveNewItemCommand = new Command(async () => await SaveNewItem());
             ItemsThresholdReachedCommand = new Command(async () => await LoadNextItems());
+            _addExpiringThingViewModel = new AddExpiringThingViewModel();
+        }
+
+        async Task SaveNewItem()
+        {
+            if (IsBusy)
+                return;
+            try
+            {
+                this.IsBusy = true;
+                var result = await _expiryngThingClient.SaveExpiryngThings(_addExpiringThingViewModel.Item);
+                if(result!=null)
+                {
+                    await ExecuteLoadItemsCommand();
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                this.IsBusy = false;               
+            }
+            this.DisplayPopup = false;
         }
 
         async Task LoadNextItems()

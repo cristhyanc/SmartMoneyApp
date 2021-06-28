@@ -15,10 +15,29 @@
         <StackLayout>
             <sfPopup:SfPopupLayout x:Name="popup" IsOpen="{Binding DisplayPopup}">
                 <sfPopup:SfPopupLayout.PopupView>
-                    <sfPopup:PopupView>
+                    <sfPopup:PopupView
+                        AcceptCommand="{Binding SaveNewItemCommand}"
+                        HeightRequest="280"
+                        ShowCloseButton="False">
+                        <sfPopup:PopupView.HeaderTemplate>
+                            <DataTemplate>
+                                <StackLayout>
+                                    <Label
+                                        Margin="0,10,0,0"
+                                        HorizontalOptions="Center"
+                                        Text="Add New Expiring Thing" />
+                                    <BoxView
+                                        BackgroundColor="Black"
+                                        HeightRequest="1"
+                                        HorizontalOptions="FillAndExpand"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
+
+                            </DataTemplate>
+                        </sfPopup:PopupView.HeaderTemplate>
                         <sfPopup:PopupView.ContentTemplate>
                             <DataTemplate>
-                                <views:AddExpiringThingView Margin="10,0,0,0" />
+                                <views:AddExpiringThingView Margin="10,0,0,0" BindingContext="{Binding AddExpiringThingViewModel}" />
                             </DataTemplate>
                         </sfPopup:PopupView.ContentTemplate>
                     </sfPopup:PopupView>

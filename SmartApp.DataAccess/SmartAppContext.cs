@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartApp.Core.Entities;
+using SmartApp.Core.Entities.ExpiringThings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,21 @@ namespace SmartApp.DataAccess
 
         }
 
-        public DbSet<TodoItem>  TodoItems { get; set; }
+      //  public DbSet<TodoItem>  TodoItems { get; set; }
         public DbSet<ExpiryngThing> ExpiryngThing { get; set; }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    try
+        //    {
+        //        modelBuilder.Entity<ExpiryngThing>().HasKey(x => x.Id);
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw;
+        //    }
+                    
+        //}
     }
 }

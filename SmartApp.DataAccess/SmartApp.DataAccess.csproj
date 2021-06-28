@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartApp.Core\SmartApp.Core.fsproj" />
+    <ProjectReference Include="..\SmartApp.Core\SmartApp.Core.ExpiringThings.fsproj" />
   </ItemGroup>
 
 </Project>

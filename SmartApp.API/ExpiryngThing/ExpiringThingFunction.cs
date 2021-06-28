@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -11,7 +12,9 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SmartApp.API.Helper;
+using SmartApp.API.Model;
 using SmartApp.Common.DTO;
 using SmartApp.Core.Contract;
 
@@ -71,6 +74,39 @@ namespace SmartApp.API.ExpiryngThing
             return new OkObjectResult(result);
 
 
+        }
+
+        [FunctionName("CreateExpiringThing")]
+        [OpenApiOperation(operationId: "CreateExpiringThing", tags: new[] { "ExpiringThing" })]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExpiryngThingDto), Description = "Create Expiring thing")]
+        public async Task<IActionResult> CreateExpiringThing(
+         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "expiringthing")] HttpRequest req, ILogger log)
+        {
+            try
+            {
+                log.LogInformation("C# HTTP trigger function processed a request.");
+
+                string requestBody = String.Empty;
+                using (StreamReader streamReader = new StreamReader(req.Body))
+                {
+                    requestBody = await streamReader.ReadToEndAsync();
+                }
+
+                var data = JsonConvert.DeserializeObject<ExpiringThingsPostResquet>(requestBody, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
+                if (data == null)
+                {
+                    return new BadRequestObjectResult("Data required");
+                }
+                var newItem = new ExpiryngThingDto { Description = data.Description, ExpireDate = data.ExpireDate, Renew = data.Repeated };
+                var result = await _expiryngThingService.Save(newItem);
+                return new CreatedResult(result.Id.ToString(), result);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+           
         }
     }
 }
