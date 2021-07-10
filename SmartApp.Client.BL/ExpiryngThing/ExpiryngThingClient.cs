@@ -17,16 +17,27 @@ namespace SmartApp.Client.BL.ExpiryngThing
         }
 
 
-        public async Task<PagedResult<ExpiryngThingDto>> GetAllExpiryngThings(int pageNo, int pageSize)
+        public async Task<PagedResult<ExpiryngThingDto>> GetAllExpiringThings(int pageNo, int pageSize)
         {
             var result = await this.GetAsync<PagedResult<ExpiryngThingDto>>($"expiringthing/{pageNo}/{pageSize}");
             return result;
         }
 
-        public async Task<ExpiryngThingDto> SaveExpiryngThings(ExpiryngThingDto data)
+        public async Task<ExpiryngThingDto> CreateExpiringThings(ExpiryngThingDto data)
         {
             var result = await this.PostAsync<ExpiryngThingDto, ExpiryngThingDto>($"expiringthing", data);
             return result;
+        }
+
+        public async Task<ExpiryngThingDto> UpdateExpiringThings(long expiringThingId, ExpiryngThingDto data)
+        {
+            var result = await this.PutAsync<ExpiryngThingDto, ExpiryngThingDto>($"expiringthing/{expiringThingId}", data);
+            return result;
+        }
+
+        public async Task DeleteExpiringThings(long expiringThingId)
+        {
+            await this.DeleteAsync($"expiringthing/{expiringThingId}");           
         }
     }
 }

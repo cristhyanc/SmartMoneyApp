@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using SmartApp.App.Models;
+using Acr.UserDialogs;
 
 namespace SmartApp.App.ViewModels.ExpiringThings
 {
@@ -25,7 +26,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
         private bool _displayPopup;
         private AddExpiringThingViewModel _addExpiringThingViewModel;
 
-        public bool DisplayPopup
+        public bool DisplayAddPopup
         {
             get => _displayPopup;
             set
@@ -68,35 +69,108 @@ namespace SmartApp.App.ViewModels.ExpiringThings
         public Command AddItemCommand { get; }
 
         public Command SaveNewItemCommand { get; }
-        
+        public Command CloseNewItemCommand { get; }
+
         public Command ItemsThresholdReachedCommand { get; }
+
+        public Command DeleteItemCommand { get; }
+
+        public Command UpdateItemCommand { get; }
 
 
         public ExpiringThingsViewModel(IExpiryngThingClient expiryngThingClient)
         {
             _expiryngThingClient = expiryngThingClient;
             Items = new ObservableCollection<ExpiringThingsModel>();
-            LoadItemsCommand = new Command(async () => {                
+            LoadItemsCommand = new Command(async () =>
+            {
                 await ExecuteLoadItemsCommand();
                 this.IsBusy = false;
             });
 
-            AddItemCommand = new Command(() => { this.DisplayPopup = true; });
+            AddItemCommand = new Command(() =>
+            {
+                this.AddExpiringThingViewModel.CleanFields();
+                this.DisplayAddPopup = true;
+            });
             SaveNewItemCommand = new Command(async () => await SaveNewItem());
+            CloseNewItemCommand = new Command(() => this.DisplayAddPopup = false);
             ItemsThresholdReachedCommand = new Command(async () => await LoadNextItems());
+            DeleteItemCommand = new Command<ExpiringThingsModel>(async (data) => await Delete(data));
+            UpdateItemCommand = new Command<ExpiringThingsModel>((data) => Update(data));
             _addExpiringThingViewModel = new AddExpiringThingViewModel();
         }
 
-        async Task SaveNewItem()
+        void Update(ExpiringThingsModel item)
         {
             if (IsBusy)
                 return;
             try
             {
+                AddExpiringThingViewModel.LoadItem(item.Data);
+                this.DisplayAddPopup = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                this.IsBusy = false;
+            }
+        }
+
+        async Task Delete(ExpiringThingsModel item)
+        {
+            if (IsBusy)
+                return;
+            try
+            {
+                if ((await UserDialogs.Instance.ConfirmAsync("Do you want to delete it?", "Delete Item", "Yes", "No")))
+                {
+                    this.IsBusy = true;
+                    await _expiryngThingClient.DeleteExpiringThings(item.Data.Id);
+                    await ExecuteLoadItemsCommand();
+                    UserDialogs.Instance.Toast("Deleted!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                this.IsBusy = false;
+            }
+        }
+
+        async Task SaveNewItem()
+        {
+            if(!AddExpiringThingViewModel.ValidateFields())
+            {
+                this.DisplayAddPopup = true;
+                return;
+            }
+
+            if (IsBusy)
+                return;
+            try
+            {
                 this.IsBusy = true;
-                var result = await _expiryngThingClient.SaveExpiryngThings(_addExpiringThingViewModel.Item);
+                ExpiryngThingDto result = null;
+
+                if (AddExpiringThingViewModel.Item.Id == 0)
+                {
+                    result = await _expiryngThingClient.CreateExpiringThings(AddExpiringThingViewModel.Item);
+                }
+                else
+                {
+                    result = await _expiryngThingClient.UpdateExpiringThings(AddExpiringThingViewModel.Item.Id, AddExpiringThingViewModel.Item);
+                }
+
                 if(result!=null)
                 {
+                    this.AddExpiringThingViewModel.CleanFields();
                     await ExecuteLoadItemsCommand();
                 }
                 
@@ -109,7 +183,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             {
                 this.IsBusy = false;               
             }
-            this.DisplayPopup = false;
+            this.DisplayAddPopup = false;
         }
 
         async Task LoadNextItems()
@@ -123,7 +197,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             {               
                 this.pageNo++;
                 var previousLastItem = Items.Last();
-                _clientPageInfo = await _expiryngThingClient.GetAllExpiryngThings(pageNo, pageSize);
+                _clientPageInfo = await _expiryngThingClient.GetAllExpiringThings(pageNo, pageSize);
                 foreach (var item in _clientPageInfo.Data)
                 {
                     Items.Add(new ExpiringThingsModel { Data = item });
@@ -149,7 +223,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             try
             {
                 Items.Clear();
-                _clientPageInfo = await _expiryngThingClient.GetAllExpiryngThings(pageNo, pageSize);
+                _clientPageInfo = await _expiryngThingClient.GetAllExpiringThings(pageNo, pageSize);
                 foreach (var item in _clientPageInfo.Data)
                 {
                     Items.Add(new ExpiringThingsModel { Data= item });
@@ -176,13 +250,23 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             ExecuteLoadItemsCommand();
         }
 
-        async Task OnItemSelected(ExpiringThingsModel item)
+        void OnItemSelected(ExpiringThingsModel item)
         {
-            if (item == null)
+            if (IsBusy)
                 return;
-
-            // This will push the ItemDetailPage onto the navigation stack
-            // await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+            try
+            {
+                AddExpiringThingViewModel.LoadItem(item.Data);
+                this.DisplayAddPopup = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                this.IsBusy = false;
+            }
         }
 
     }

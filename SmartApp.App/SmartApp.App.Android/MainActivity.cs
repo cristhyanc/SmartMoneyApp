@@ -5,6 +5,7 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
 using System.Threading.Tasks;
+using Acr.UserDialogs;
 
 namespace SmartApp.App.Droid
 {
@@ -17,18 +18,17 @@ namespace SmartApp.App.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            LoadApplication(new App());
-        }
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
-        {
+            UserDialogs.Init(this);
+            Syncfusion.XForms.Android.PopupLayout.SfPopupLayoutRenderer.Init();
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AndroidEnvironment.UnhandledExceptionRaiser += AndroidEnvironment_UnhandledExceptionRaiser;
+            LoadApplication(new App());
+        }
 
-            Rg.Plugins.Popup.Popup.Init(this);
-            Syncfusion.XForms.Android.PopupLayout.SfPopupLayoutRenderer.Init();
+        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        {                    
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 

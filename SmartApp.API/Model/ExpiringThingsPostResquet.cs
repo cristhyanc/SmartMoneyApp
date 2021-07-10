@@ -8,6 +8,6 @@ namespace SmartApp.API.Model
     {
         public string Description { get; set; }
         public DateTime ExpireDate { get; set; }
-        public bool Repeated { get; set; }
+        public bool Renew { get; set; }
     }
 }

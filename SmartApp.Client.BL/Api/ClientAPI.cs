@@ -13,7 +13,7 @@ namespace SmartApp.Client.BL
         private readonly string _baseRoute;
         JsonSerializerSettings _deserializationSettings;
 
-        protected ClientAPI( HttpClient http)
+        protected ClientAPI(HttpClient http)
         {
 
             _baseRoute = http?.BaseAddress?.AbsoluteUri;
@@ -35,7 +35,7 @@ namespace SmartApp.Client.BL
             {
                 if (res.StatusCode == HttpStatusCode.NoContent)
                     return default(TReturn);
-                else 
+                else
                     return await res.Content.ReadFromJsonAsync<TReturn>();
             }
             else
@@ -43,7 +43,7 @@ namespace SmartApp.Client.BL
                 string msg = await res.Content.ReadAsStringAsync();
                 Console.WriteLine(msg);
                 throw new Exception(msg);
-            }           
+            }
         }
 
         protected async Task<TReturn> PostAsync<TReturn, TRequest>(string relativeUri, TRequest request)
@@ -54,6 +54,32 @@ namespace SmartApp.Client.BL
                 return await res.Content.ReadFromJsonAsync<TReturn>();
             }
             else
+            {
+                string msg = await res.Content.ReadAsStringAsync();
+                Console.WriteLine(msg);
+                throw new Exception(msg);
+            }
+        }
+
+        protected async Task<TReturn> PutAsync<TReturn, TRequest>(string relativeUri, TRequest request)
+        {
+            HttpResponseMessage res = await Http.PutAsJsonAsync<TRequest>($"{_baseRoute}/{relativeUri}", request);
+            if (res.IsSuccessStatusCode)
+            {
+                return await res.Content.ReadFromJsonAsync<TReturn>();
+            }
+            else
+            {
+                string msg = await res.Content.ReadAsStringAsync();
+                Console.WriteLine(msg);
+                throw new Exception(msg);
+            }
+        }
+
+        protected async Task DeleteAsync(string relativeUri)
+        {
+            HttpResponseMessage res = await Http.DeleteAsync($"{_baseRoute}/{relativeUri}");
+            if (!res.IsSuccessStatusCode)
             {
                 string msg = await res.Content.ReadAsStringAsync();
                 Console.WriteLine(msg);

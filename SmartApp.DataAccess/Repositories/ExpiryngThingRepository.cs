@@ -8,6 +8,13 @@ namespace SmartApp.DataAccess.Repositories
 {
     public class ExpiryngThingRepository : RepositoryBase<ExpiryngThing>, IExpiryngThingRepository
     {
+
+        private string AllColumns = @"[Id]
+                                      ,[Description]
+                                      ,[ExpireDate]
+                                      ,[Renew]
+                                      ,[TenantId]
+                                      ,[CreatedOn]";
         SmartAppContext _context;
         public ExpiryngThingRepository(SmartAppContext context) : base(context)
         {
@@ -19,12 +26,7 @@ namespace SmartApp.DataAccess.Repositories
         public override ExpiryngThing Get(Int64 id)
         {
             var data = _context.QueryFirstOrDefault<ExpiryngThing>
-                (@"SELECT [Id]
-                      ,[Description]
-                      ,[ExpireDate]
-                      ,[Renew]
-                      ,[TenantId]
-                      ,[CreatedOn
+                (@$"SELECT {AllColumns}
                   FROM [dbo].[ExpiryngThing]
                   WHERE Id=@Id",
                 new
@@ -38,12 +40,7 @@ namespace SmartApp.DataAccess.Repositories
         public override async Task<ExpiryngThing> GetAsync(Int64 id)
         {
             var data = await _context.QueryFirstOrDefaultAsync<ExpiryngThing>
-                (@"SELECT [Id]
-                      ,[Description]
-                      ,[ExpireDate]
-                      ,[Renew]
-                      ,[TenantId]
-                      ,[CreatedOn
+                (@$"SELECT {AllColumns}
                   FROM [dbo].[ExpiryngThing]
                   WHERE Id=@Id",
                 new
@@ -57,12 +54,7 @@ namespace SmartApp.DataAccess.Repositories
         public override IEnumerable<ExpiryngThing> GetAll(int skip=0, int take=20)
         {
             var data = _context.Query<ExpiryngThing>
-                (@"SELECT [Id]
-                      ,[Description]
-                      ,[ExpireDate]
-                      ,[Renew]
-                      ,[TenantId]
-                      ,[CreatedOn
+                (@$"SELECT {AllColumns}
                   FROM [dbo].[ExpiryngThing]
                   ORDER BY [ExpireDate]  
                   OFFSET @Skip ROWS
@@ -86,12 +78,7 @@ namespace SmartApp.DataAccess.Repositories
               );
 
             var data = await _context.QueryAsync<ExpiryngThing>
-                (@"SELECT [Id]
-                      ,[Description]
-                      ,[ExpireDate]
-                      ,[Renew]
-                      ,[TenantId]
-                      ,[CreatedOn]
+                (@$"SELECT {AllColumns}
                   FROM [dbo].[ExpiryngThing]
                   ORDER BY [ExpireDate] 
                   OFFSET @Skip ROWS

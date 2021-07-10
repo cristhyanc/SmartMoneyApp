@@ -8,7 +8,9 @@ namespace SmartApp.Common.Interfaces.Client
 {
     public interface IExpiryngThingClient
     {
-        Task<PagedResult<ExpiryngThingDto>> GetAllExpiryngThings(int pageNo, int pageSize);
-        Task<ExpiryngThingDto> SaveExpiryngThings(ExpiryngThingDto data);
+        Task<PagedResult<ExpiryngThingDto>> GetAllExpiringThings(int pageNo, int pageSize);
+        Task<ExpiryngThingDto> CreateExpiringThings(ExpiryngThingDto data);
+        Task<ExpiryngThingDto> UpdateExpiringThings(long expiringThingId, ExpiryngThingDto data);
+        Task DeleteExpiringThings(long expiringThingId);
     }
 }

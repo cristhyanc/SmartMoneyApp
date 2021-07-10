@@ -15,6 +15,15 @@ type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingReposito
     interface IExpiryngThingService with
        
       
+      member this.Delete(id: int64) : Task<unit> =
+        async {
+                  let! data=expiryngThingRepository.GetAsync(id) |> Async.AwaitTask
+                  if not <| obj.ReferenceEquals(data,null)
+                   then expiryngThingRepository.Delete(data) 
+                        do! expiryngThingRepository.SaveChangesAsync() |> Async.AwaitTask |> Async.Ignore
+
+              } |> Async.StartAsTask
+
       member this.GetAll(skip: int) (take: int): Task<int * seq<ExpiryngThingDto>> =   
                            async {
                                    let items: List<ExpiryngThingDto> = new List<ExpiryngThingDto>()

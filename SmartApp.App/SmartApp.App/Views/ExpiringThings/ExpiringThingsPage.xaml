@@ -3,6 +3,7 @@
     x:Class="SmartApp.App.Views.ExpiringThings.ExpiringThingsPage"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:fa="clr-namespace:SmartApp.App.Fonts"
     xmlns:local="clr-namespace:SmartApp.App.ViewModels.ExpiringThings"
     xmlns:model="clr-namespace:SmartApp.App.Models"
     xmlns:sfPopup="clr-namespace:Syncfusion.XForms.PopupLayout;assembly=Syncfusion.SfPopupLayout.XForms"
@@ -13,12 +14,9 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
-            <sfPopup:SfPopupLayout x:Name="popup" IsOpen="{Binding DisplayPopup}">
+            <sfPopup:SfPopupLayout x:Name="popup" IsOpen="{Binding DisplayAddPopup}">
                 <sfPopup:SfPopupLayout.PopupView>
-                    <sfPopup:PopupView
-                        AcceptCommand="{Binding SaveNewItemCommand}"
-                        HeightRequest="280"
-                        ShowCloseButton="False">
+                    <sfPopup:PopupView HeightRequest="300" ShowCloseButton="false">
                         <sfPopup:PopupView.HeaderTemplate>
                             <DataTemplate>
                                 <StackLayout>
@@ -35,6 +33,23 @@
 
                             </DataTemplate>
                         </sfPopup:PopupView.HeaderTemplate>
+                        <sfPopup:PopupView.FooterTemplate>
+                            <DataTemplate>
+                                <StackLayout HeightRequest="10" Orientation="Horizontal">
+                                    <Button
+                                        Margin="10,0,0,0"
+                                        Command="{Binding CloseNewItemCommand}"
+                                        HeightRequest="10"
+                                        HorizontalOptions="CenterAndExpand"
+                                        Text="Cancel" />
+                                    <Button
+                                        Command="{Binding SaveNewItemCommand}"
+                                        HeightRequest="10"
+                                        HorizontalOptions="CenterAndExpand"
+                                        Text="Save" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </sfPopup:PopupView.FooterTemplate>
                         <sfPopup:PopupView.ContentTemplate>
                             <DataTemplate>
                                 <views:AddExpiringThingView Margin="10,0,0,0" BindingContext="{Binding AddExpiringThingViewModel}" />
@@ -65,32 +80,56 @@
                     SelectionMode="Single">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <StackLayout x:DataType="model:ExpiringThingsModel" BackgroundColor="#D9D4D4">
-                                <Frame
-                                    Margin="5,5,5,5"
-                                    BackgroundColor="{Binding StatusColor}"
-                                    CornerRadius="5">
-                                    <StackLayout>
-                                        <Label
-                                            FontSize="16"
-                                            LineBreakMode="NoWrap"
-                                            Style="{DynamicResource ListItemTextStyle}"
-                                            Text="{Binding Data.Description}" />
-                                        <Label
-                                            FontSize="13"
-                                            LineBreakMode="NoWrap"
-                                            Style="{DynamicResource ListItemDetailTextStyle}"
-                                            Text="{Binding Data.ExpireDate, StringFormat='{0:dd/MM/yyyy}'}" />
-                                    </StackLayout>
-                                </Frame>
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItem
+                                        BackgroundColor="WhiteSmoke"
+                                        Command="{Binding Source={x:Reference ItemsListView}, Path=BindingContext.UpdateItemCommand}"
+                                        CommandParameter="{Binding Source={RelativeSource Self}, Path=BindingContext}"
+                                        Text="Update">
+                                        <SwipeItem.IconImageSource>
+                                            <FontImageSource FontFamily="FA" Glyph="{x:Static fa:FontAwesomeIcons.Edit}" />
+                                        </SwipeItem.IconImageSource>
+                                    </SwipeItem>
+                                    <SwipeItem
+                                        BackgroundColor="Red"
+                                        Command="{Binding Source={x:Reference ItemsListView}, Path=BindingContext.DeleteItemCommand}"
+                                        CommandParameter="{Binding Source={RelativeSource Self}, Path=BindingContext}"
+                                        Text="Delete">
+                                        <SwipeItem.IconImageSource>
+                                            <FontImageSource FontFamily="FA" Glyph="{x:Static fa:FontAwesomeIcons.Trash}" />
+                                        </SwipeItem.IconImageSource>
+                                    </SwipeItem>
 
-                                <StackLayout.GestureRecognizers>
-                                    <TapGestureRecognizer
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:ExpiringThingsViewModel}}, Path=ItemTapped}"
-                                        CommandParameter="{Binding .}"
-                                        NumberOfTapsRequired="1" />
-                                </StackLayout.GestureRecognizers>
-                            </StackLayout>
+                                </SwipeView.RightItems>
+
+                                <StackLayout x:DataType="model:ExpiringThingsModel" BackgroundColor="#D9D4D4">
+                                    <Frame
+                                        Margin="5,5,5,5"
+                                        BackgroundColor="{Binding StatusColor}"
+                                        CornerRadius="5">
+                                        <StackLayout>
+                                            <Label
+                                                FontSize="16"
+                                                LineBreakMode="NoWrap"
+                                                Style="{DynamicResource ListItemTextStyle}"
+                                                Text="{Binding Data.Description}" />
+                                            <Label
+                                                FontSize="13"
+                                                LineBreakMode="NoWrap"
+                                                Style="{DynamicResource ListItemDetailTextStyle}"
+                                                Text="{Binding Data.ExpireDate, StringFormat='{0:dd/MM/yyyy}'}" />
+                                        </StackLayout>
+                                    </Frame>
+
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:ExpiringThingsViewModel}}, Path=ItemTapped}"
+                                            CommandParameter="{Binding .}"
+                                            NumberOfTapsRequired="1" />
+                                    </StackLayout.GestureRecognizers>
+                                </StackLayout>
+                            </SwipeView>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>

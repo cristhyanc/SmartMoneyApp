@@ -61,16 +61,15 @@ namespace SmartApp.API.ExpiryngThing
         // [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "code", In = OpenApiSecurityLocationType.Query)]
         [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = true, Type = typeof(Int64), Description = "Expiringthing Id")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(Common.DTO.ExpiryngThingDto), Description = "Expiring thing")]
-        public async Task<IActionResult> GetExpiringThing(
-           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "expiringthing/{id}")] HttpRequest req,
-           string id, ILogger log)
+        public async Task<IActionResult> GetExpiringThing( [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "expiringthing/{id}")] HttpRequest req,
+           Int64 id, ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            long intId = 0;
-            long.TryParse(id, out intId);
+            //long intId = 0;
+            //long.TryParse(id, out intId);
 
-            var result = await _expiryngThingService.Get(intId);
+            var result = await _expiryngThingService.Get(id);
             return new OkObjectResult(result);
 
 
@@ -97,7 +96,7 @@ namespace SmartApp.API.ExpiryngThing
                 {
                     return new BadRequestObjectResult("Data required");
                 }
-                var newItem = new ExpiryngThingDto { Description = data.Description, ExpireDate = data.ExpireDate, Renew = data.Repeated };
+                var newItem = new ExpiryngThingDto { Description = data.Description, ExpireDate = data.ExpireDate, Renew = data.Renew };
                 var result = await _expiryngThingService.Save(newItem);
                 return new CreatedResult(result.Id.ToString(), result);
             }
@@ -107,6 +106,76 @@ namespace SmartApp.API.ExpiryngThing
                 throw ex;
             }
            
+        }
+
+        [FunctionName("UpdateExpiringThing")]
+        [OpenApiOperation(operationId: "UpdateExpiringThing", tags: new[] { "ExpiringThing" })]
+        [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = true, Type = typeof(Int64), Description = "Expiringthing Id")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExpiryngThingDto), Description = "Update Expiring thing")]
+        public async Task<IActionResult> UpdateExpiringThing([HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "expiringthing/{id}")] HttpRequest req, Int64 id, ILogger log)
+        {
+            try
+            {
+                log.LogInformation("C# HTTP trigger function processed a request.");
+
+                //long intId = 0;
+                //long.TryParse(id, out intId);
+
+                var currentItem = await _expiryngThingService.Get(id);
+
+                if (currentItem == null)
+                {
+                    return new NotFoundResult();
+                }
+
+                string requestBody = String.Empty;
+                using (StreamReader streamReader = new StreamReader(req.Body))
+                {
+                    requestBody = await streamReader.ReadToEndAsync();
+                }
+
+                var data = JsonConvert.DeserializeObject<ExpiringThingsPostResquet>(requestBody, new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" });
+                if (data == null)
+                {
+                    return new BadRequestObjectResult("Data required");
+                }
+
+                currentItem.Description = data.Description;
+                currentItem.ExpireDate = data.ExpireDate; 
+                currentItem.Renew = data.Renew;
+                var result = await _expiryngThingService.Save(currentItem);
+                return new CreatedResult(result.Id.ToString(), result);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+
+        [FunctionName("DeleteExpiringThing")]
+        [OpenApiOperation(operationId: "DeleteExpiringThing", tags: new[] { "ExpiringThing" })]
+        [OpenApiParameter(name: "id", In = ParameterLocation.Query, Required = true, Type = typeof(Int64), Description = "Expiringthing Id")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ExpiryngThingDto), Description = "Create Expiring thing")]
+        public async Task DeleteExpiringThing(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "expiringthing/{id}")] HttpRequest req, Int64 id, ILogger log)
+        {
+            try
+            {
+                log.LogInformation("C# HTTP trigger function processed a request.");
+
+                //long intId = 0;
+                //long.TryParse(id, out intId);
+
+                await _expiryngThingService.Delete(id);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
         }
     }
 }

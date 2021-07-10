@@ -14,5 +14,7 @@ namespace SmartApp.Common.Interfaces.Core
         public Task Insert(T item);
         public void Update(T item);
         public Task SaveChangesAsync();
+        public void Delete(T entity);
+        public void Delete(IEnumerable<T> entities);
     }
 }
