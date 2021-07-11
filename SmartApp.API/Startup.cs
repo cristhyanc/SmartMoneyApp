@@ -19,6 +19,7 @@ namespace SmartApp.API
 
    public class Startup: FunctionsStartup
     {
+
         public override void Configure(IFunctionsHostBuilder builder)
         {
             string SqlConnection = Environment.GetEnvironmentVariable("SqlConnectionString");
