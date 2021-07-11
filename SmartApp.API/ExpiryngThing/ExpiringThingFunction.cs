@@ -42,16 +42,24 @@ namespace SmartApp.API.ExpiryngThing
             [HttpTrigger(AuthorizationLevel.Anonymous, "get",  Route = "expiringthing/{pageno}/{pagesize}")] HttpRequest req, int pageno, int pagesize,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
-            if(pagesize==0)
+            try
             {
-                pagesize = 50;
-            }
+                log.LogInformation("C# HTTP trigger function processed a request.");
 
-            var data = await _expiryngThingService.GetAll(pageno, pagesize);
-            var result =new PagedResult<Common.DTO.ExpiryngThingDto>(data.Item2, pageno, data.Item2.Count(), data.Item1);
-            return  new OkObjectResult(result);
+                if (pagesize == 0)
+                {
+                    pagesize = 50;
+                }
+
+                var data = await _expiryngThingService.GetAll(pageno, pagesize);
+                var result = new PagedResult<Common.DTO.ExpiryngThingDto>(data.Item2, pageno, data.Item2.Count(), data.Item1);
+                return new OkObjectResult(result);
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestObjectResult(ex.Message);
+            }
+           
 
 
         }
