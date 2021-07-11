@@ -22,6 +22,8 @@ namespace SmartApp.API
         public override void Configure(IFunctionsHostBuilder builder)
         {
             string SqlConnection = Environment.GetEnvironmentVariable("SqlConnectionString");
+            string appInsights = Environment.GetEnvironmentVariable("appInsights");
+
             builder.Services.AddDbContext<SmartAppContext>(
                 options => options.UseSqlServer(SqlConnection));
 
@@ -29,7 +31,9 @@ namespace SmartApp.API
            // builder.Services.AddScoped<ITodoRepository, TodoRepository>();
             builder.Services.AddScoped<IExpiryngThingService, ExpiryngThingService>();
             builder.Services.AddScoped<IExpiryngThingRepository, ExpiryngThingRepository>();
+            //builder.Services.AddApplicationInsightsTelemetry(appInsights);
             
         }
     }
 }
+
