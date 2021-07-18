@@ -77,14 +77,15 @@
                     ItemsSource="{Binding Items}"
                     RemainingItemsThreshold="{Binding ItemTreshold}"
                     RemainingItemsThresholdReachedCommand="{Binding ItemsThresholdReachedCommand}"
+                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
                     SelectionMode="Single">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <SwipeView>
                                 <SwipeView.RightItems>
                                     <SwipeItem
-                                        BackgroundColor="WhiteSmoke"
-                                        Command="{Binding Source={x:Reference ItemsListView}, Path=BindingContext.UpdateItemCommand}"
+                                        BackgroundColor="LightGreen"
+                                        Command="{Binding Source={x:Reference ItemsListView}, Path=BindingContext.RenewItemCommand}"
                                         CommandParameter="{Binding Source={RelativeSource Self}, Path=BindingContext}"
                                         Text="Update">
                                         <SwipeItem.IconImageSource>

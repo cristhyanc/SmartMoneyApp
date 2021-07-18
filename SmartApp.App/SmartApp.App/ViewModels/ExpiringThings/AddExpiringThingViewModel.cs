@@ -47,17 +47,20 @@ namespace SmartApp.App.ViewModels.ExpiringThings
 
         public void LoadItem(ExpiryngThingDto expiryngThing)
         {
-            this.CleanFields();
+            this.ValidationText = "";
+            this.IsValidationVisible = false;            
             this.Item = expiryngThing;            
         }
 
         public void CleanFields()
-        {
-            Item.ExpireDate = DateTime.Now;
+        {            
             this.ValidationText = "";
             this.IsValidationVisible = false;
             this.Item = new ExpiryngThingDto();
+            Item.ExpireDate = DateTime.Now;
         }
+
+
 
         public bool ValidateFields()
         {

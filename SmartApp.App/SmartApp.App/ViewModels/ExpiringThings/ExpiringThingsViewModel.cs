@@ -21,8 +21,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
         private int pageNo = 0;
         private int pageSize = 50;
         private int _itemTreshold;        
-        public event EventHandler<ExpiringThingsModel> ScrollToEvent;
-        private bool _loadingMoreItems = false;
+        public event EventHandler<ExpiringThingsModel> ScrollToEvent;        
         private bool _displayPopup;
         private AddExpiringThingViewModel _addExpiringThingViewModel;
 
@@ -32,13 +31,16 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             set
             {
                 SetProperty(ref _displayPopup, value);
-                
+                if(!value)
+                {
+                    this.AddExpiringThingViewModel = null;
+                }
             }
         }
 
         public ExpiringThingsModel SelectedItem
         {
-            get => _selectedItem;
+            get => null;
             set
             {
                 SetProperty(ref _selectedItem, value);
@@ -54,8 +56,6 @@ namespace SmartApp.App.ViewModels.ExpiringThings
                 SetProperty(ref _addExpiringThingViewModel, value);              
             }
         }
-
-
 
         public int ItemTreshold
         {
@@ -75,8 +75,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
 
         public Command DeleteItemCommand { get; }
 
-        public Command UpdateItemCommand { get; }
-
+        public Command RenewItemCommand { get; }
 
         public ExpiringThingsViewModel(IExpiryngThingClient expiryngThingClient)
         {
@@ -90,23 +89,25 @@ namespace SmartApp.App.ViewModels.ExpiringThings
 
             AddItemCommand = new Command(() =>
             {
-                this.AddExpiringThingViewModel.CleanFields();
+                AddExpiringThingViewModel = new AddExpiringThingViewModel();           
                 this.DisplayAddPopup = true;
             });
             SaveNewItemCommand = new Command(async () => await SaveNewItem());
             CloseNewItemCommand = new Command(() => this.DisplayAddPopup = false);
             ItemsThresholdReachedCommand = new Command(async () => await LoadNextItems());
             DeleteItemCommand = new Command<ExpiringThingsModel>(async (data) => await Delete(data));
-            UpdateItemCommand = new Command<ExpiringThingsModel>((data) => Update(data));
-            _addExpiringThingViewModel = new AddExpiringThingViewModel();
+            RenewItemCommand = new Command<ExpiringThingsModel>((data) => StartRenew(data));           
         }
 
-        void Update(ExpiringThingsModel item)
+        void StartRenew(ExpiringThingsModel item)
         {
             if (IsBusy)
                 return;
             try
             {
+                AddExpiringThingViewModel = new AddExpiringThingViewModel();
+                item.Data.ExpireDate = DateTime.Now;
+
                 AddExpiringThingViewModel.LoadItem(item.Data);
                 this.DisplayAddPopup = true;
             }
@@ -169,8 +170,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
                 }
 
                 if(result!=null)
-                {
-                    this.AddExpiringThingViewModel.CleanFields();
+                {                  
                     await ExecuteLoadItemsCommand();
                 }
                 
@@ -188,7 +188,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
 
         async Task LoadNextItems()
         {
-            if (IsBusy)
+            if (IsBusy || this.pageSize>this.Items?.Count )
                 return;
             
             IsBusy = true;
@@ -243,7 +243,6 @@ namespace SmartApp.App.ViewModels.ExpiringThings
 
         public void OnAppearing()
         {
-
             pageNo = 0;
             this._clientPageInfo = null;
             SelectedItem = null;
@@ -252,11 +251,12 @@ namespace SmartApp.App.ViewModels.ExpiringThings
 
         void OnItemSelected(ExpiringThingsModel item)
         {
-            if (IsBusy)
+            if (IsBusy || item == null)
                 return;
             try
             {
-                AddExpiringThingViewModel.LoadItem(item.Data);
+                this.AddExpiringThingViewModel = new AddExpiringThingViewModel();
+                AddExpiringThingViewModel.LoadItem(item.Data);                
                 this.DisplayAddPopup = true;
             }
             catch (Exception ex)

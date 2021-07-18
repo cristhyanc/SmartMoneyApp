@@ -21,7 +21,7 @@ namespace SmartApp.App.Models
                         var totalDays = Data.ExpireDate - Data.CreatedOn.Value;
                         var daysLeft = Data.ExpireDate - DateTime.Now;
 
-                        var percentage = (daysLeft.Days * 100) / totalDays.Days;
+                        var percentage = (daysLeft.Days * 100) / (totalDays.Days==0?1: totalDays.Days);
 
                         if (percentage > 19)
                         {
