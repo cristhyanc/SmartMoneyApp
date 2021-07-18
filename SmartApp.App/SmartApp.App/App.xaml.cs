@@ -27,10 +27,11 @@ namespace SmartApp.App
                 // DependencyService.RegisterSingleton<AzureFuntionHttpClient>(httpClientFuntions);
                 // DependencyService.Register<IExpiryngThingClient, ExpiryngThingClient>();
 
+                //AzureFuntionHttpClient httpClientFuntions = new AzureFuntionHttpClient("https://expiringthingsfc.azurewebsites.net/api");
+                //httpClientFuntions.BaseAddress = new Uri("https://expiringthingsfc.azurewebsites.net/api");
 
-
-                AzureFuntionHttpClient httpClientFuntions = new AzureFuntionHttpClient("https://expiringthingsfc.azurewebsites.net/api");
-                httpClientFuntions.BaseAddress = new Uri("https://expiringthingsfc.azurewebsites.net/api");
+                AzureFuntionHttpClient httpClientFuntions = new AzureFuntionHttpClient("http://192.168.1.100/api");
+                httpClientFuntions.BaseAddress = new Uri("http://192.168.1.100/api");
                 MvxIoCProvider.Initialize();
                 Mvx.IoCProvider.RegisterType<IExpiryngThingClient, ExpiryngThingClient>();
                 Mvx.IoCProvider.RegisterSingleton<AzureFuntionHttpClient>(httpClientFuntions);

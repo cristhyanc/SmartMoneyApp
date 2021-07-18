@@ -11,6 +11,5 @@ namespace SmartApp.Common.DTO
         public DateTime ExpireDate { get; set; }
         public Guid TenantId { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public bool Renew { get; set; }
     }
 }

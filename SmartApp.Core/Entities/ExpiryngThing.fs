@@ -26,5 +26,3 @@ open SmartApp.Common.DataAccess
                  member this.Description  with get () = _description  and set (value:string) = _description <- value                 
                 
                  member this.ExpireDate  with get () = _expireDate  and set (value:DateTime) = _expireDate <- value
-
-                 member this.Renew  with get () = _renew  and set (value:bool) = _renew <- value

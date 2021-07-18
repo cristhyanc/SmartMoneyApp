@@ -11,8 +11,7 @@ namespace SmartApp.DataAccess.Repositories
 
         private string AllColumns = @"[Id]
                                       ,[Description]
-                                      ,[ExpireDate]
-                                      ,[Renew]
+                                      ,[ExpireDate]                                   
                                       ,[TenantId]
                                       ,[CreatedOn]";
         SmartAppContext _context;

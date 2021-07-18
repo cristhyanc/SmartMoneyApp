@@ -104,7 +104,7 @@ namespace SmartApp.API.ExpiryngThing
                 {
                     return new BadRequestObjectResult("Data required");
                 }
-                var newItem = new ExpiryngThingDto { Description = data.Description, ExpireDate = data.ExpireDate, Renew = data.Renew };
+                var newItem = new ExpiryngThingDto { Description = data.Description, ExpireDate = data.ExpireDate};
                 var result = await _expiryngThingService.Save(newItem);
                 return new CreatedResult(result.Id.ToString(), result);
             }
@@ -149,8 +149,7 @@ namespace SmartApp.API.ExpiryngThing
                 }
 
                 currentItem.Description = data.Description;
-                currentItem.ExpireDate = data.ExpireDate; 
-                currentItem.Renew = data.Renew;
+                currentItem.ExpireDate = data.ExpireDate;            
                 var result = await _expiryngThingService.Save(currentItem);
                 return new CreatedResult(result.Id.ToString(), result);
             }
