@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.OS;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
+using Android.Content;
+using Microsoft.Identity.Client;
 
 namespace SmartApp.App.Droid
 {
@@ -24,12 +26,20 @@ namespace SmartApp.App.Droid
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             AndroidEnvironment.UnhandledExceptionRaiser += AndroidEnvironment_UnhandledExceptionRaiser;
             LoadApplication(new App());
+            App.AuthUIParent = this;
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {                    
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            AuthenticationContinuationHelper
+                .SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
         }
 
         public override void OnBackPressed()

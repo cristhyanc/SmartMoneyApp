@@ -57,6 +57,14 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             }
         }
 
+        bool isRefreshing = false;
+        public bool IsRefreshing
+        {
+            get { return isRefreshing; }
+            set { SetProperty(ref isRefreshing, value); }
+        }
+
+
         public int ItemTreshold
         {
             get { return _itemTreshold; }
@@ -83,8 +91,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             Items = new ObservableCollection<ExpiringThingsModel>();
             LoadItemsCommand = new Command(async () =>
             {
-                await ExecuteLoadItemsCommand();
-                this.IsBusy = false;
+                await ExecuteLoadItemsCommand();              
             });
 
             AddItemCommand = new Command(() =>
@@ -131,7 +138,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
                 {
                     this.IsBusy = true;
                     await _expiryngThingClient.DeleteExpiringThings(item.Data.Id);
-                    await ExecuteLoadItemsCommand();
+                    await ExecuteLoadItemsCommand();                     
                     UserDialogs.Instance.Toast("Deleted!!");
                 }
             }
@@ -170,8 +177,9 @@ namespace SmartApp.App.ViewModels.ExpiringThings
                 }
 
                 if(result!=null)
-                {                  
-                    await ExecuteLoadItemsCommand();
+                {
+                     await ExecuteLoadItemsCommand();
+                  
                 }
                 
             }
@@ -216,9 +224,8 @@ namespace SmartApp.App.ViewModels.ExpiringThings
 
         async Task ExecuteLoadItemsCommand()
         {
-            if (IsBusy)
-                return;
-            IsBusy = true;
+           
+            //this.IsRefreshing = true;
 
             try
             {
@@ -237,6 +244,33 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             finally
             {
                 IsBusy = false;
+                this.IsRefreshing = false;
+            }
+        }
+
+        async Task LoadItems()
+        {
+            if (IsBusy)
+                return;
+            IsBusy = true;
+
+            try
+            {
+                Items.Clear();
+                _clientPageInfo = await _expiryngThingClient.GetAllExpiringThings(pageNo, pageSize);
+                foreach (var item in _clientPageInfo.Data)
+                {
+                    Items.Add(new ExpiringThingsModel { Data = item });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
@@ -247,6 +281,7 @@ namespace SmartApp.App.ViewModels.ExpiringThings
             this._clientPageInfo = null;
             SelectedItem = null;
             ExecuteLoadItemsCommand();
+            
         }
 
         void OnItemSelected(ExpiringThingsModel item)

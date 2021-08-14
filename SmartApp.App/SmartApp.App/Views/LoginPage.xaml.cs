@@ -17,5 +17,18 @@ namespace SmartApp.App.Views
             InitializeComponent();
             this.BindingContext = new LoginViewModel();
         }
+
+
+        private async void OnSignIn(object sender, EventArgs e)
+        {
+            try
+            {
+                await (Application.Current as App).SignIn();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Authentication Error", ex.Message, "OK");
+            }
+        }
     }
 }

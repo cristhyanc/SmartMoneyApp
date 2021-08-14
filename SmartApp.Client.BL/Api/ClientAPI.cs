@@ -9,15 +9,16 @@ namespace SmartApp.Client.BL
 {
     public abstract class ClientAPI
     {
-        protected readonly HttpClient Http;
+        protected readonly HttpClient Http;      
         private readonly string _baseRoute;
         JsonSerializerSettings _deserializationSettings;
 
         protected ClientAPI(HttpClient http)
         {
-
+            
             _baseRoute = http?.BaseAddress?.AbsoluteUri;
-            Http = http;
+            Http = http;          
+
             _deserializationSettings = new JsonSerializerSettings
             {
                 DateFormatHandling = DateFormatHandling.IsoDateFormat,

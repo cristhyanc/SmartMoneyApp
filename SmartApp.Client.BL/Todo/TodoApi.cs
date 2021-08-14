@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 namespace SmartApp.Client.BL.Todo
 {
     public class TodoApi : ClientAPI
-    {
-     
+    {     
 
         public TodoApi(HttpClient http): base(http)
         {

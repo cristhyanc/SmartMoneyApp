@@ -12,11 +12,14 @@ open SmartApp.Core.Entities.ExpiringThings
 
 
 type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingRepository, mapper: IMapper)  =
-    interface IExpiryngThingService with
-       
+    let mutable userId = ""
+    interface IExpiryngThingService with 
       
+      member this.UserId   with get() = userId  and set(value) = userId <- value  
+
       member this.Delete(id: int64) : Task<unit> =
         async {
+                  do expiryngThingRepository.UserId<-userId
                   let! data=expiryngThingRepository.GetAsync(id) |> Async.AwaitTask
                   if not <| obj.ReferenceEquals(data,null)
                    then expiryngThingRepository.Delete(data) 
@@ -26,6 +29,7 @@ type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingReposito
 
       member this.GetAll(skip: int) (take: int): Task<int * seq<ExpiryngThingDto>> =   
                            async {
+                                   do expiryngThingRepository.UserId<-userId
                                    let items: List<ExpiryngThingDto> = new List<ExpiryngThingDto>()
                                    let! (total, data) = expiryngThingRepository.GetAllAsync(skip,take) |> Async.AwaitTask
                                    let listData= data |> Seq.toList
@@ -35,6 +39,7 @@ type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingReposito
 
         member this.Get(id: int64): Task<ExpiryngThingDto> = 
             async {
+                     do expiryngThingRepository.UserId<-userId
                      let! data=expiryngThingRepository.GetAsync(id) |> Async.AwaitTask
                      if not <| obj.ReferenceEquals(data,null)
                         then return data.Adapt<ExpiryngThingDto>()
@@ -44,6 +49,7 @@ type public ExpiryngThingService(expiryngThingRepository: IExpiryngThingReposito
 
         member this.Save(newItem:ExpiryngThingDto): Task<ExpiryngThingDto>=
             async {
+                    do expiryngThingRepository.UserId<-userId
                     if String.IsNullOrEmpty(newItem.Description)
                         then nullArg "Description" "Description is Require"
                     

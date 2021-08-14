@@ -16,7 +16,9 @@ namespace SmartApp.DataAccess.Repositories
     {
 
 
-        SmartAppContext _context;      
+        SmartAppContext _context;
+
+        public string UserId { get ; set ; }
 
         public RepositoryBase(SmartAppContext context)
         {
@@ -34,6 +36,10 @@ namespace SmartApp.DataAccess.Repositories
             Type examType = typeof(T);
             PropertyInfo createdOn = examType.GetProperty("CreatedOn");
             createdOn.SetValue(entity, DateTime.Now);
+
+            PropertyInfo userId = examType.GetProperty("UserId");
+            createdOn.SetValue(entity, this.UserId);
+
             await  this._context.Set<T>().AddAsync(entity);
         }
 

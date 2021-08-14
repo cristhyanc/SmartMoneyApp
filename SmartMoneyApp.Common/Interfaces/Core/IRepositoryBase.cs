@@ -16,5 +16,7 @@ namespace SmartApp.Common.Interfaces.Core
         public Task SaveChangesAsync();
         public void Delete(T entity);
         public void Delete(IEnumerable<T> entities);
+        public string UserId { get; set; }
+
     }
 }

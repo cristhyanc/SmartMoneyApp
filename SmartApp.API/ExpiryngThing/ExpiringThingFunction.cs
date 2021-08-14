@@ -30,6 +30,12 @@ namespace SmartApp.API.ExpiryngThing
             _expiryngThingService = expiringThingService;
         }
 
+        private void SetUser(HttpRequest req)
+        {
+            var headers = req.Headers;
+            headers?.TryGetValue("userID", out var userId);
+            _expiryngThingService.UserId = userId;
+        }
 
 
         [FunctionName("GetExpiringThings")]
@@ -44,13 +50,14 @@ namespace SmartApp.API.ExpiryngThing
         {
             try
             {
+                SetUser(req);
                 log.LogInformation("C# HTTP trigger function processed a request.");
 
                 if (pagesize == 0)
                 {
                     pagesize = 50;
                 }
-
+               
                 var data = await _expiryngThingService.GetAll(pageno, pagesize);
                 var result = new PagedResult<Common.DTO.ExpiryngThingDto>(data.Item2, pageno, data.Item2.Count(), data.Item1);
                 return new OkObjectResult(result);
@@ -72,11 +79,9 @@ namespace SmartApp.API.ExpiryngThing
         public async Task<IActionResult> GetExpiringThing( [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "expiringthing/{id}")] HttpRequest req,
            Int64 id, ILogger log)
         {
+            SetUser(req);
             log.LogInformation("C# HTTP trigger function processed a request.");
-
-            //long intId = 0;
-            //long.TryParse(id, out intId);
-
+                       
             var result = await _expiryngThingService.Get(id);
             return new OkObjectResult(result);
 
@@ -91,6 +96,9 @@ namespace SmartApp.API.ExpiryngThing
         {
             try
             {
+
+                SetUser(req);
+
                 log.LogInformation("C# HTTP trigger function processed a request.");
 
                 string requestBody = String.Empty;
@@ -104,7 +112,7 @@ namespace SmartApp.API.ExpiryngThing
                 {
                     return new BadRequestObjectResult("Data required");
                 }
-                var newItem = new ExpiryngThingDto { Description = data.Description, ExpireDate = data.ExpireDate};
+                var newItem = new ExpiryngThingDto { Description = data.Description, ExpireDate = data.ExpireDate };
                 var result = await _expiryngThingService.Save(newItem);
                 return new CreatedResult(result.Id.ToString(), result);
             }
@@ -124,11 +132,10 @@ namespace SmartApp.API.ExpiryngThing
         {
             try
             {
+                SetUser(req);
+
                 log.LogInformation("C# HTTP trigger function processed a request.");
-
-                //long intId = 0;
-                //long.TryParse(id, out intId);
-
+                               
                 var currentItem = await _expiryngThingService.Get(id);
 
                 if (currentItem == null)
@@ -170,10 +177,9 @@ namespace SmartApp.API.ExpiryngThing
         {
             try
             {
-                log.LogInformation("C# HTTP trigger function processed a request.");
+                SetUser(req);
 
-                //long intId = 0;
-                //long.TryParse(id, out intId);
+                log.LogInformation("C# HTTP trigger function processed a request.");
 
                 await _expiryngThingService.Delete(id);
             }

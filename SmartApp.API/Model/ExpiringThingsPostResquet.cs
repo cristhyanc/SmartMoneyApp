@@ -7,6 +7,7 @@ namespace SmartApp.API.Model
     public class ExpiringThingsPostResquet
     {
         public string Description { get; set; }
+        public string UserId { get; set; }        
         public DateTime ExpireDate { get; set; }
         public bool Renew { get; set; }
     }

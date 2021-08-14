@@ -34,6 +34,16 @@ namespace SmartApp.App.Views.ExpiringThings
             
         }
 
+        private async void OnSignOut(object sender, EventArgs e)
+        {
+            var signout = await DisplayAlert("Sign out?", "Do you want to sign out?", "Yes", "No");
+            if (signout)
+            {
+                await (Application.Current as App).SignOut();
+            }
+        }
+
+
         private void _viewModel_ScrollToEvent(object sender, ExpiringThingsModel e)
         {
             ItemsListView.ScrollTo(e, ScrollToPosition.End);

@@ -12,4 +12,7 @@ type public IExpiryngThingService =
     abstract Save: newItem:ExpiryngThingDto -> Task<ExpiryngThingDto>
 
     abstract Delete: id:int64 -> Task<unit>
+   
+    abstract member UserId : string with get, set
+    
 

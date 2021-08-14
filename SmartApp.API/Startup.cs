@@ -22,7 +22,7 @@ namespace SmartApp.API
 
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            string SqlConnection = Environment.GetEnvironmentVariable("SqlConnectionString");
+            string SqlConnection = Environment.GetEnvironmentVariable("connectionString");
             string appInsights = Environment.GetEnvironmentVariable("appInsights");
 
             builder.Services.AddDbContext<SmartAppContext>(

@@ -11,7 +11,7 @@ namespace SmartApp.Common.DataAccess
             this.CreatedOn = DateTime.Now;
         }
         public DateTime CreatedOn { get; set; }
-
-        public Guid TenantId { get; set; }
+              
+        public string UserId { get; set; }
     }
 }
