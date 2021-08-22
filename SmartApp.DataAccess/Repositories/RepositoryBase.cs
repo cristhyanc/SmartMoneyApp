@@ -38,7 +38,7 @@ namespace SmartApp.DataAccess.Repositories
             createdOn.SetValue(entity, DateTime.Now);
 
             PropertyInfo userId = examType.GetProperty("UserId");
-            createdOn.SetValue(entity, this.UserId);
+            userId.SetValue(entity, this.UserId);
 
             await  this._context.Set<T>().AddAsync(entity);
         }

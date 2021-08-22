@@ -22,6 +22,7 @@ using Application = Xamarin.Forms.Application;
 using SmartApp.App.Auth;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using SmartApp.App.ViewModels;
 
 namespace SmartApp.App
 {
@@ -151,13 +152,14 @@ namespace SmartApp.App
             //httpClientFuntions.BaseAddress = new Uri("https://expiringthingsfc.azurewebsites.net/api");
 
             AzureFuntionHttpClient httpClientFuntions = new AzureFuntionHttpClient("http://192.168.1.100/api");
-            httpClientFuntions.DefaultRequestHeaders.Add("userID", UserID);
             httpClientFuntions.BaseAddress = new Uri("http://192.168.1.100/api");
 
+            httpClientFuntions.DefaultRequestHeaders.Add("userID", UserID);
             MvxIoCProvider.Initialize();
             Mvx.IoCProvider.RegisterType<IExpiryngThingClient, ExpiryngThingClient>();
             Mvx.IoCProvider.RegisterSingleton<AzureFuntionHttpClient>(httpClientFuntions);
             Mvx.IoCProvider.RegisterType<ExpiringThingsViewModel, ExpiringThingsViewModel>();
+            Mvx.IoCProvider.RegisterType<UserAccountViewModel, UserAccountViewModel>();            
         }
 
         private async Task LoadCurrentUser()
@@ -170,8 +172,8 @@ namespace SmartApp.App
                 Debug.WriteLine($"Successful silent authentication for: {silentAuthResult.Account.Username}");
                 Debug.WriteLine($"Access token: {silentAuthResult.AccessToken}");
 
-                // await InitializeGraphClientAsync();
-                this.userID = "testt";
+                //  await InitializeGraphClientAsync();
+                this.userID = silentAuthResult.Account.Username;
 
                  IsSignedIn = true;
                 RegisterDI();
@@ -196,7 +198,7 @@ namespace SmartApp.App
                 Debug.WriteLine("User already signed in.");
                 Debug.WriteLine($"Successful silent authentication for: {silentAuthResult.Account.Username}");
                 Debug.WriteLine($"Access token: {silentAuthResult.AccessToken}");
-               
+                this.userID = silentAuthResult.Account.Username;
             }
             catch (MsalUiRequiredException msalEx)
             {
@@ -212,55 +214,57 @@ namespace SmartApp.App
                 var interactiveAuthResult = await interactiveRequest.ExecuteAsync();
                 Debug.WriteLine($"Successful interactive authentication for: {interactiveAuthResult.Account.Username}");
                 Debug.WriteLine($"Access token: {interactiveAuthResult.AccessToken}");
+                this.userID = interactiveAuthResult.Account.Username;
 
-              
             }
             catch (Exception ex)
             {
                 throw;
             }
                        
-            await InitializeGraphClientAsync();
+           // await InitializeGraphClientAsync();
+           
             IsSignedIn = true;
             RegisterDI();
             MainPage = new AppShell();
 
         }
 
-        private async Task InitializeGraphClientAsync()
-        {
-            var currentAccounts = await PCA.GetAccountsAsync();
-            try
-            {
-                if (currentAccounts.Count() > 0)
-                {
-                    // Initialize Graph client
-                    GraphClient = new GraphServiceClient(new DelegateAuthenticationProvider(
-                        async (requestMessage) =>
-                        {
-                            var result = await PCA.AcquireTokenSilent(Scopes, currentAccounts.FirstOrDefault())
-                                .ExecuteAsync();
+        //private async Task InitializeGraphClientAsync()
+        //{
+        //    var currentAccounts = await PCA.GetAccountsAsync();
+        //    try
+        //    {
+        //        if (currentAccounts.Count() > 0)
+        //        {
+        //            // Initialize Graph client
+        //            GraphClient = new GraphServiceClient(new DelegateAuthenticationProvider(
+        //                async (requestMessage) =>
+        //                {
+        //                    var result = await PCA.AcquireTokenSilent(Scopes, currentAccounts.FirstOrDefault())
+        //                        .ExecuteAsync();
 
-                            requestMessage.Headers.Authorization =
-                                new AuthenticationHeaderValue("Bearer", result.AccessToken);
-                        }));
+        //                    requestMessage.Headers.Authorization =
+        //                        new AuthenticationHeaderValue("Bearer", result.AccessToken);
+        //                }));
 
-                    await GetUserInfo();
+        //            await GetUserInfo();
 
-                    IsSignedIn = true;
-                }
-                else
-                {
-                    IsSignedIn = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Failed to initialized graph client.");
-                Debug.WriteLine($"Accounts in the msal cache: {currentAccounts.Count()}.");
-                Debug.WriteLine($"See exception message for details: {ex.Message}");
-            }
-        }
+        //            IsSignedIn = true;
+        //        }
+        //        else
+        //        {
+        //            IsSignedIn = false;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine("Failed to initialized graph client.");
+        //        Debug.WriteLine($"Accounts in the msal cache: {currentAccounts.Count()}.");
+        //        Debug.WriteLine($"See exception message for details: {ex.Message}");
+        //    }
+        //}
+
         public async Task SignOut()
         {
             try
@@ -277,6 +281,7 @@ namespace SmartApp.App
                     await PCA.RemoveAsync(accounts.First());
                     accounts = await PCA.GetAccountsAsync();
                 }
+                MainPage = new LoginPage();
             }
             catch (Exception ex)
             {
@@ -284,32 +289,32 @@ namespace SmartApp.App
             }
         }
 
-        private async Task GetUserInfo()
-        {
+        //private async Task GetUserInfo()
+        //{
            
-            try
-            {
-                var user = await GraphClient.Me.Request()
-               .Select(u => new
-               {
-                   u.DisplayName,
-                   u.Id,                   
-                   u.Mail
+        //    try
+        //    {
+        //        var user = await GraphClient.Me.Request()
+        //       .Select(u => new
+        //       {
+        //           u.DisplayName,
+        //           u.Id,                   
+        //           u.Mail
                  
-               })
-               .GetAsync();
+        //       })
+        //       .GetAsync();
               
-                UserName = user.DisplayName;
-                UserID = user.Id;
-                UserEmail = string.IsNullOrEmpty(user.Mail) ? user.UserPrincipalName : user.Mail;
-               // UserTimeZone = TZConvert.GetTimeZoneInfo(user.MailboxSettings.TimeZone);
-            }
-            catch (Exception ex)
-            {
+        //        UserName = user.DisplayName;
+        //        UserID = user.Id;
+        //        UserEmail = string.IsNullOrEmpty(user.Mail) ? user.UserPrincipalName : user.Mail;
+        //       // UserTimeZone = TZConvert.GetTimeZoneInfo(user.MailboxSettings.TimeZone);
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                throw;
-            }
-        }
+        //        throw;
+        //    }
+        //}
               
         protected override void OnStart()
         {

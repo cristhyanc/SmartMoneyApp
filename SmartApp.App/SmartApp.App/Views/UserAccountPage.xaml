@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SmartApp.App.Views.UserAccountPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <ContentPage.Content>
+        <StackLayout>
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="UserID:" />
+                <Label Text="{Binding UserId}" />
+            </StackLayout>
+
+            <Label
+                Margin="10,20,10,20"
+                FontAttributes="Bold"
+                FontSize="Medium"
+                HorizontalOptions="Center"
+                Text="Sign out" />
+            <Button
+                Command="{Binding SignoutCommand}"
+                HorizontalOptions="Center"
+                Text="Sign out" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

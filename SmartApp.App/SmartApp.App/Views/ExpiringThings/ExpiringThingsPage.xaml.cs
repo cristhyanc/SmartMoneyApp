@@ -21,16 +21,14 @@ namespace SmartApp.App.Views.ExpiringThings
             try
             {
                 InitializeComponent();
-                _viewModel = Mvx.IoCProvider.Resolve<ExpiringThingsViewModel>();
-               
+                _viewModel = Mvx.IoCProvider.Resolve<ExpiringThingsViewModel>();               
                 BindingContext = _viewModel;
             }
             catch (Exception ex)
             {
 
                 throw;
-            }
-         
+            }        
             
         }
 

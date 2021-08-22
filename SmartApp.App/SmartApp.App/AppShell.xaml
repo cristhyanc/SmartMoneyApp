@@ -42,9 +42,13 @@
             </ShellContent.Icon>
         </ShellContent>
         <ShellContent
-            Title="Browse"
-            ContentTemplate="{DataTemplate local:ItemsPage}"
-            Icon="icon_feed.png" />
+            Title="User"
+            ContentTemplate="{DataTemplate local:UserAccountPage}"
+            Route="UserAccountPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FA" Glyph="{x:Static fa:FontAwesomeIcons.User}" />
+            </ShellContent.Icon>
+        </ShellContent>
     </TabBar>
 
     <!--
